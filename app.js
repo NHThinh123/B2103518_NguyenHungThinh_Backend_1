@@ -29,9 +29,9 @@ app.use((err, req, res, next) => {
     // Middware xử lý lỗi tập trung.
     //Trong các đoạn coade xử lý các route, gọi next(error)
     //      sẽ chuyển về middware xử lý lỗi này
-    
-    return res.status(error.statusCode || 500).json({
-        message: error.message || "Internal Server Error",
+
+    return res.status(err.statusCode || 500).json({
+        message: err.message || "Internal Server Error",
     });
     
 });
