@@ -1,19 +1,23 @@
-const ApiError = require("../api-error");
 const ContactService = require("../services/contact.service");
 const MongoDB = require("../utils/mongodb.util");
+const ApiError = require("../api-error");
+//
+
+//
 exports.create = async ( req, res, next) =>{
    if (!req.body?.name){
     return next(new ApiError(400, "Name can not be empty"));
    }
 
    try {
-    const contactService = new ContactService(MongoDB.client);
-    const document = await contactService.create(req.body);
-    return res.send(document);
+        const contactService = new ContactService(MongoDB.client);
+        const document = await contactService.create(req.body);
+        //console.log(document);
+        return res.send(document);
    } catch (error){
-    return next(
+        return next(
         new ApiError(500, "An error occurred while creating the contact")
-    );
+        );
    }
 };
 exports.findAll = async (req, res, next) =>{
@@ -23,9 +27,9 @@ exports.findAll = async (req, res, next) =>{
         const contactService =new ContactService(MongoDB.client);
         const { name }= req.query;
         if (name) {
-            document= await contactService.findByName(name);
+            documents= await contactService.findByName(name);
         } else {
-            document = await contactService.find({});
+            documents = await contactService.find({});
         }
     } catch (error) {
         return next (
@@ -33,7 +37,7 @@ exports.findAll = async (req, res, next) =>{
         );
     }
 
-    return res.send(document);
+    return res.send(documents);
 };
 exports.findOne = async (req, res, next) =>{
     try {

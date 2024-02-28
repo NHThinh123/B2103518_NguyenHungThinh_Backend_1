@@ -2,11 +2,11 @@ const {ObjectId} = require("mongodb");
 
 class ContactService{
     constructor(client){
-        this.Contact = client.db().collection("contacts");
+        this.contact = client.db().collection("contacts");
     }
     //dinh nghia cac phuong thuc truy xuat csdl su dung mongodb api
-    extractConactData(payload){
-        const contact ={
+    extractContactData(payload){
+        const contact = {
             name: payload.name,
             email: payload.email,
             address: payload.address,
@@ -21,17 +21,17 @@ class ContactService{
     }
 
     async create (payload){
-        const contact =this.extractConactData(payload);
-        const result = await this.Contact.findOneAndUpdate(
+        const contact = this.extractContactData(payload);
+        const result = await this.contact.findOneAndUpdate(
             contact,
-            {$set: {favorite: contact.favorite === true}},
-            { returnDocument: "after", upsert: true}
+            { $set: {favorite: contact.favorite === true} },
+            { returnDocument: "after", upsert: true }
         );
         return result.value;
     }
 
     async find(filter) {
-        const cursor = await this.Contact.find(filter);
+        const cursor = await this.contact.find(filter);
         return await cursor.toArray();
     }
 
@@ -42,18 +42,18 @@ class ContactService{
     }
 
     async findById(id){
-        return await this.Contact.findOne({
-            _id: ObjectId.isValid(id) ? new ObjectId(id) : null
-        });
+        return await this.contact.findOne({
+            _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+            });
     }
  
     async update (id, payload){
         const filter = {
-            _id: ObjectId.isValid(id) ? new ObjectId(id): null
+            _id: ObjectId.isValid(id) ? new ObjectId(id): null,
         };
 
-        const update = this.extractConactData(payload);
-        const result = await this.Contact.findOneAndUpdate(
+        const update = this.extractContactData(payload);
+        const result = await this.contact.findOneAndUpdate(
             filter,
             {$set: update},
             {returnDocument: "after"}
@@ -61,22 +61,24 @@ class ContactService{
         return result.value;
     }
     async delete (id){
-        const result = await this.Contact.findOneAndDelete({
-            _id: ObjectId.isValid(id) ? new ObjectId(id): null
+        const result = await this.contact.findOneAndDelete({
+            _id: ObjectId.isValid(id) ?  new ObjectId(id): null,
         });
         return result.value;
 
     }
 
     async findFavorite(){
-        const result= await this.find({favorite: true}).toArray();
+        const result= await this.contact.find({favorite: true}).toArray();
         return result;
     }
 
-    async deeteAll(){
-        const result = await this.Contact.deleteMany({});
+    async deleteAll(){
+        const result = await this.contact.deleteMany({});
         return result.deleteCount;
     }
+
+    
 
 }
 
